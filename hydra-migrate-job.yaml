@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hydra-migrate-job
+spec:
+  template:
+    spec:
+      containers:
+        - name: hydra-migrate
+          image: oryd/hydra:v1.8.5
+          command: ['hydra']
+          args: ['migrate', 'sql', '-e', '--yes']
+          env:
+            - name: DSN
+              value: "postgres://hydra:secret@postgres.default.svc.cluster.local:5432/hydra?sslmode=disable&max_conns=20&max_idle_conns=4"
+      restartPolicy: Never
+  backoffLimit: 5
